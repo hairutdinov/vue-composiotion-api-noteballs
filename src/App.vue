@@ -1,7 +1,11 @@
 <script setup>
+
 </script>
 
 <template>
+  <RouterLink to="/">Notes</RouterLink> |
+  <RouterLink to="/stats">Stats</RouterLink>
+  <RouterView />
 </template>
 
 <style scoped>

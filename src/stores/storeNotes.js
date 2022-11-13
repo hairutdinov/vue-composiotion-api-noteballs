@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import {ref} from "vue";
+import {computed, ref} from "vue";
 
 export const useStoreNotes = defineStore('storeNotes', () => {
 
@@ -30,9 +30,18 @@ export const useStoreNotes = defineStore('storeNotes', () => {
         notes.value = notes.value.filter(note => note.id !== idToDelete)
     }
 
+    const getNoteContent = computed(() => (id) => notes.value.filter(note => note.id === id)[0].content)
+
+    const updateNote = (id, content) => {
+        let index = notes.value.findIndex(note => note.id === id);
+        notes.value[index].content = content;
+    }
+
     return {
         notes,
         addNote,
         deleteNote,
+        getNoteContent,
+        updateNote,
     }
 })

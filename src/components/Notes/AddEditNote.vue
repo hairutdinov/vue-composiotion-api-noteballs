@@ -12,6 +12,7 @@
               :placeholder="placeholderText"
               ref="textareaRef"
               v-autofocus
+              maxlength="100"
           />
       </div>
     </div>
@@ -29,6 +30,7 @@ import {computed, onMounted, ref, watch} from "vue";
 import { useRoute } from "vue-router";
 import { useStoreNotes } from "@/stores/storeNotes.js";
 import { vAutofocus } from "@/directives/vAutofocus.js";
+import { useWatchCharacters } from "@/use/useWatchCharacters";
 
 const storeNotes = useStoreNotes()
 const route = useRoute()
@@ -68,6 +70,8 @@ const focusTextarea = () => {
 defineExpose({
   focusTextarea
 })
+
+useWatchCharacters(modelValue)
 
 </script>
 

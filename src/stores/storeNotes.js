@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue';
 import { db } from '@/js/firebase'
-import { collection, getDocs, onSnapshot, setDoc, doc } from 'firebase/firestore'
+import { collection, getDocs, onSnapshot, setDoc, doc, deleteDoc } from 'firebase/firestore'
 const notesCollectionRef = collection(db, 'notes');
 
 export const useStoreNotes = defineStore('storeNotes', () => {
@@ -17,9 +17,7 @@ export const useStoreNotes = defineStore('storeNotes', () => {
         });
     }
 
-    const deleteNote = idToDelete => {
-        notes.value = notes.value.filter(note => note.id !== idToDelete)
-    }
+    const deleteNote = async idToDelete => await deleteDoc(doc(notesCollectionRef, idToDelete))
 
     const updateNote = (id, content) => {
         let index = notes.value.findIndex(note => note.id === id);

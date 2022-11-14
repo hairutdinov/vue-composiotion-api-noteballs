@@ -10,7 +10,8 @@ const notesCollectionRef = collection(db, 'notes')
 
 export const useStoreNotes = defineStore('storeNotes', () => {
 
-    const notes = ref([])
+    const notes = ref([]),
+        notesLoaded = ref(false)
 
     const addNote = async (newNote) => {
         let currentDate = new Date().getTime(),
@@ -40,20 +41,25 @@ export const useStoreNotes = defineStore('storeNotes', () => {
     })
 
     const getNotes = async () => {
+        notesLoaded.value = true;
         const unsubscribe = onSnapshot(query(notesCollectionRef, orderBy("date", "desc")), (querySnapshot) => {
             let notesLocal = []
             querySnapshot.forEach((doc) => {
                 notesLocal.push({
                     id: doc.id,
-                    content: doc.data().content
+                    content: doc.data().content,
+                    date: doc.data().date,
                 })
             })
+
             notes.value = notesLocal
+            notesLoaded.value = false;
         })
     }
 
     return {
         notes,
+        notesLoaded,
         addNote,
         deleteNote,
         updateNote,

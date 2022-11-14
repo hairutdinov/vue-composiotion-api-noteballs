@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue';
+import { computed, ref } from 'vue'
 import { db } from '@/js/firebase'
 import {
-    collection, getDocs,
-    onSnapshot, setDoc, doc, deleteDoc, updateDoc,
+    collection,
+    onSnapshot, doc, deleteDoc, updateDoc, addDoc,
     query, orderBy
 } from 'firebase/firestore'
-const notesCollectionRef = collection(db, 'notes');
+const notesCollectionRef = collection(db, 'notes')
 
 export const useStoreNotes = defineStore('storeNotes', () => {
 
@@ -14,12 +14,12 @@ export const useStoreNotes = defineStore('storeNotes', () => {
 
     const addNote = async (newNote) => {
         let currentDate = new Date().getTime(),
-            id = currentDate.toString()
-
-        await setDoc(doc(notesCollectionRef, id), {
-            id,
-            content: newNote.value
-        });
+            date = currentDate.toString()
+        
+        const docRef = await addDoc(notesCollectionRef, {
+            content: newNote.value,
+            date,
+        })
     }
 
     const deleteNote = async idToDelete => await deleteDoc(doc(notesCollectionRef, idToDelete))
@@ -27,7 +27,7 @@ export const useStoreNotes = defineStore('storeNotes', () => {
     const updateNote = async (id, content) => {
         await updateDoc(doc(notesCollectionRef, id), {
             content
-        });
+        })
     }
 
     const getNoteContent = computed(() => (id) => notes.value.filter(note => note.id === id)[0].content)
@@ -40,16 +40,16 @@ export const useStoreNotes = defineStore('storeNotes', () => {
     })
 
     const getNotes = async () => {
-        const unsubscribe = onSnapshot(query(notesCollectionRef, orderBy("id", "desc")), (querySnapshot) => {
-            let notesLocal = [];
+        const unsubscribe = onSnapshot(query(notesCollectionRef, orderBy("date", "desc")), (querySnapshot) => {
+            let notesLocal = []
             querySnapshot.forEach((doc) => {
                 notesLocal.push({
                     id: doc.id,
                     content: doc.data().content
-                });
-            });
+                })
+            })
             notes.value = notesLocal
-        });
+        })
     }
 
     return {

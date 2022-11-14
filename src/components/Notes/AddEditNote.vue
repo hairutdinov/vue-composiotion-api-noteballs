@@ -11,6 +11,7 @@
               class="textarea"
               :placeholder="placeholderText"
               ref="textareaRef"
+              v-autofocus
           />
       </div>
     </div>
@@ -67,28 +68,9 @@ defineExpose({
   focusTextarea
 })
 
-/*
-const dynamicEventHandler = ref(null),
-    dynamicTextareaPlaceholder = ref('')
-
-const isAddNoteRoute = route.name === 'notes',
-      isEditNoteRoute = route.name === 'edit'
-
-onMounted(() => {
-  if (isAddNoteRoute) {
-    dynamicEventHandler.value = () => {
-      storeNotes.addNote(newNote)
-      newNote.value = ''
-      newNoteRef.value.focus()
-    }
-    dynamicTextareaPlaceholder.value = 'Add a new note'
-  } else if (isEditNoteRoute) {
-    dynamicEventHandler.value = () => {
-      console.log('edit')
-    }
-    dynamicTextareaPlaceholder.value = ''
-  }
-})*/
+const vAutofocus = {
+  mounted: el => el.focus()
+}
 
 </script>
 

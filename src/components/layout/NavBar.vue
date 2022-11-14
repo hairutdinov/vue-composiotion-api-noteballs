@@ -32,19 +32,16 @@
       >
         <div class="navbar-end">
           <RouterLink
-            to="/"
+            :to="link.url"
             class="navbar-item"
             active-class="is-active"
+            v-for="link of links"
+            :key="link.url"
+            @click="handleLinkClicked"
           >
-            Notes
+            {{ link.name }}
           </RouterLink>
-          <RouterLink
-            to="/stats"
-            class="navbar-item"
-            active-class="is-active"
-          >
-            Stats
-          </RouterLink>
+
         </div>
       </div>
     </div>
@@ -52,17 +49,22 @@
 </template>
 
 <script setup>
-/*
-  imports
-*/
+import { ref } from 'vue'
 
-  import { ref } from 'vue'
+const showMobileNav = ref(false)
 
-/*
-  mobile nav
-*/
+const links = [
+  {
+    name: 'Notes',
+    url: '/'
+  },
+  {
+    name: 'Stats',
+    url: '/stats'
+  },
+];
 
-  const showMobileNav = ref(false)
+const handleLinkClicked = () => showMobileNav.value = false
 </script>
 
 <style>

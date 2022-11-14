@@ -1,22 +1,20 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue';
 import { db } from '@/js/firebase'
-import { collection, getDocs, onSnapshot } from 'firebase/firestore'
+import { collection, getDocs, onSnapshot, setDoc, doc } from 'firebase/firestore'
+const notesCollectionRef = collection(db, 'notes');
 
 export const useStoreNotes = defineStore('storeNotes', () => {
 
     const notes = ref([])
 
-    const addNote = (newNote) => {
+    const addNote = async (newNote) => {
         let currentDate = new Date().getTime(),
             id = currentDate.toString()
 
-        let note = {
-            id,
+        await setDoc(doc(notesCollectionRef, id), {
             content: newNote.value
-        }
-
-        notes.value.unshift(note)
+        });
     }
 
     const deleteNote = idToDelete => {
@@ -38,7 +36,7 @@ export const useStoreNotes = defineStore('storeNotes', () => {
     })
 
     const getNotes = async () => {
-        const unsubscribe = onSnapshot(collection(db, 'notes'), (querySnapshot) => {
+        const unsubscribe = onSnapshot(notesCollectionRef, (querySnapshot) => {
             let notesLocal = [];
             querySnapshot.forEach((doc) => {
                 notesLocal.push({

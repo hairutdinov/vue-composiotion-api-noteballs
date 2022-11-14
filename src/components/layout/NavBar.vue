@@ -18,6 +18,7 @@
           aria-label="menu"
           data-target="navbarBasicExample"
           role="button"
+          ref="navbarBurger"
         >
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
@@ -29,6 +30,7 @@
         id="navbarBasicExample"
         class="navbar-menu"
         :class="{ 'is-active' : showMobileNav }"
+        ref="navbarRef"
       >
         <div class="navbar-end">
           <RouterLink
@@ -37,7 +39,7 @@
             active-class="is-active"
             v-for="link of links"
             :key="link.url"
-            @click="handleLinkClicked"
+            @click="closeNavBar"
           >
             {{ link.name }}
           </RouterLink>
@@ -50,8 +52,11 @@
 
 <script setup>
 import { ref } from 'vue'
+import { onClickOutside } from '@vueuse/core'
 
-const showMobileNav = ref(false)
+const showMobileNav = ref(false),
+      navbarRef = ref(null),
+      navbarBurger = ref(null)
 
 const links = [
   {
@@ -64,7 +69,12 @@ const links = [
   },
 ];
 
-const handleLinkClicked = () => showMobileNav.value = false
+const closeNavBar = () => showMobileNav.value = false
+
+onClickOutside(navbarRef, (event) => closeNavBar(), {
+  ignore: [navbarBurger]
+})
+
 </script>
 
 <style>

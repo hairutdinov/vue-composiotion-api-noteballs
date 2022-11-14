@@ -28,6 +28,7 @@
 import {computed, onMounted, ref, watch} from "vue";
 import { useRoute } from "vue-router";
 import { useStoreNotes } from "@/stores/storeNotes.js";
+import { vAutofocus } from "@/directives/vAutofocus.js";
 
 const storeNotes = useStoreNotes()
 const route = useRoute()
@@ -67,10 +68,6 @@ const focusTextarea = () => {
 defineExpose({
   focusTextarea
 })
-
-const vAutofocus = {
-  mounted: el => el.focus()
-}
 
 </script>
 

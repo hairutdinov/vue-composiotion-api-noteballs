@@ -11,7 +11,7 @@
       </section>
       <footer class="modal-card-foot is-justify-content-flex-end">
         <button class="button" @click="closeModal">Cancel</button>
-        <button class="button is-danger">Delete</button>
+        <button class="button is-danger" @click="handleDeleteBtnClicked">Delete</button>
       </footer>
     </div>
   </div>
@@ -20,19 +20,26 @@
 <script setup>
 import { onClickOutside } from '@vueuse/core'
 import {ref, onMounted, onUnmounted} from "vue";
+import { useStoreNotes } from "@/stores/storeNotes.js";
 
+const storeNotes = useStoreNotes()
 const modalCardRef = ref(null)
 
 const props = defineProps({
   modelValue: {
     type: Boolean,
     default: false,
+  },
+  noteId: {
+    type: String,
+    required: true
   }
 })
 
 const emit = defineEmits(['update:modelValue'])
 
 const closeModal = () => emit('update:modelValue', false)
+const handleDeleteBtnClicked = () => storeNotes.deleteNote(props.noteId)
 
 onClickOutside(modalCardRef, (event) => closeModal())
 
@@ -47,7 +54,6 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('keyup', handleEscapePressed)
 })
-
 
 </script>
 

@@ -69,14 +69,6 @@ const credentials = reactive({
   password: '',
 })
 
-const handleRegister = () => {
-  storeAuth.registerUser(credentials)
-}
-
-const handleLogin = () => {
-
-}
-
 const onSubmit = () => {
   if (!credentials.email || !credentials.password) {
     alert('Please enter email and password')
@@ -84,10 +76,10 @@ const onSubmit = () => {
   }
 
   if (register.value) {
-    return handleRegister()
+    return storeAuth.register(credentials)
   }
 
-  handleLogin()
+  storeAuth.login(credentials)
 }
 </script>
 

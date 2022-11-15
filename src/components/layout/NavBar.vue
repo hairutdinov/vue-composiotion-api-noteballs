@@ -44,6 +44,13 @@
             {{ link.name }}
           </RouterLink>
 
+          <RouterLink
+            to="/logout"
+            class="navbar-item"
+          >
+            Logout
+          </RouterLink>
+
         </div>
       </div>
     </div>
@@ -66,6 +73,10 @@ const links = [
   {
     name: 'Stats',
     url: '/stats'
+  },
+  {
+    name: 'Auth',
+    url: '/auth'
   },
 ];
 

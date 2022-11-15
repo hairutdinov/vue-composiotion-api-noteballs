@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { auth } from '@/js/firebase'
-import { createUserWithEmailAndPassword } from '@firebase/auth'
+import { createUserWithEmailAndPassword, signOut } from '@firebase/auth'
 import { ref } from "vue";
 
 export const useStoreAuth = defineStore('storeAuth', () => {
@@ -18,7 +18,14 @@ export const useStoreAuth = defineStore('storeAuth', () => {
             })
     }
 
+    const logout = () => {
+        signOut(auth)
+            .then(() => console.log('User signed out'))
+            .catch((error) => console.error);
+    }
+
     return {
         registerUser,
+        logout,
     }
 })

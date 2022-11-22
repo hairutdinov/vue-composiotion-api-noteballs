@@ -11,74 +11,71 @@ import { useStoreAuth } from "@/stores/storeAuth.js";
 let notesCollectionRef = null,
     notesCollectionQuery = null
 
-export const useStoreNotes = defineStore('storeNotes', () => {
+export const useStoreNotes = defineStore('storeNotes', {
+    state: () => {
+        return {
+            notes: [],
+            notesLoaded: false,
+        }
+    },
+    actions: {
+        init() {
+            const storeAuth = useStoreAuth()
 
-    const notes = ref([]),
-        notesLoaded = ref(false)
+            notesCollectionRef = collection(db, 'users', storeAuth.user.id, 'notes')
+            notesCollectionQuery = query(notesCollectionRef, orderBy("date", "desc"))
 
-    const init = () => {
-        const storeAuth = useStoreAuth()
-        notesCollectionRef = collection(db, 'users', storeAuth.user.id, 'notes')
-        notesCollectionQuery = query(notesCollectionRef, orderBy("date", "desc"))
-        getNotes()
-    }
+            this.getNotes()
+        },
+        async addNote(newNote) {
+            let currentDate = new Date().getTime(),
+                date = currentDate.toString()
 
-    const addNote = async (newNote) => {
-        let currentDate = new Date().getTime(),
-            date = currentDate.toString()
-        
-        const docRef = await addDoc(notesCollectionRef, {
-            content: newNote.value,
-            date,
-        })
-    }
-
-    const deleteNote = async idToDelete => await deleteDoc(doc(notesCollectionRef, idToDelete))
-
-    const updateNote = async (id, content) => {
-        await updateDoc(doc(notesCollectionRef, id), {
-            content
-        })
-    }
-
-    const getNoteContent = computed(() => (id) => notes.value.filter(note => note.id === id)[0].content)
-
-    const totalNotesCount = computed(() => notes.value.length)
-
-    const totalCharactersCount = computed(() => {
-        return notes.value.reduce(
-            (sum, curr) => curr.content.length + sum,
-            0
-        )
-    })
-
-    const getNotes = async () => {
-        notesLoaded.value = true;
-        const unsubscribe = onSnapshot(notesCollectionQuery, (querySnapshot) => {
-            let notesLocal = []
-            querySnapshot.forEach((doc) => {
-                notesLocal.push({
-                    id: doc.id,
-                    content: doc.data().content,
-                    date: doc.data().date,
-                })
+            const docRef = await addDoc(notesCollectionRef, {
+                content: newNote.value,
+                date,
             })
+        },
+        async deleteNote(idToDelete) {
+            await deleteDoc(doc(notesCollectionRef, idToDelete))
+        },
+        async updateNote(id, content) {
+            await updateDoc(doc(notesCollectionRef, id), {
+                content
+            })
+        },
+        async getNotes() {
+            this.notesLoaded = true;
+            const unsubscribe = onSnapshot(notesCollectionQuery, (querySnapshot) => {
+                let notesLocal = []
+                querySnapshot.forEach((doc) => {
+                    notesLocal.push({
+                        id: doc.id,
+                        content: doc.data().content,
+                        date: doc.data().date,
+                    })
+                })
 
-            notes.value = notesLocal
-            notesLoaded.value = false;
-        })
-    }
+                this.notes = notesLocal
+                this.notesLoaded = false;
+            })
+        }
+    },
+    getters: {
+        getNoteContent() {
+            return (id) => this.notes.filter(note => note.id === id)[0].content
+        },
+        totalNotesCount() {
+            return this.notes.length
+        },
+        totalCharactersCount() {
+            return this.notes.reduce(
+                (sum, curr) => curr.content.length + sum,
+                0
+            )
+        },
+        clearNotes() {
 
-    return {
-        notes,
-        notesLoaded,
-        init,
-        addNote,
-        deleteNote,
-        updateNote,
-        getNotes,
-        getNoteContent,
-        totalNotesCount,
-        totalCharactersCount,
+        },
     }
 })

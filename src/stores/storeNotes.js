@@ -59,7 +59,10 @@ export const useStoreNotes = defineStore('storeNotes', {
                 this.notes = notesLocal
                 this.notesLoaded = false;
             })
-        }
+        },
+        clearNotes() {
+            this.notes = []
+        },
     },
     getters: {
         getNoteContent() {
@@ -73,9 +76,6 @@ export const useStoreNotes = defineStore('storeNotes', {
                 (sum, curr) => curr.content.length + sum,
                 0
             )
-        },
-        clearNotes() {
-
         },
     }
 })

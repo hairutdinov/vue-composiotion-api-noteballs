@@ -45,10 +45,11 @@
           </RouterLink>
 
           <button
+            v-if="storeAuth.user.id"
             class="button is-small is-info ml-2 mt-3"
-            @click="storeAuth.logout"
+            @click="logout"
           >
-            Logout
+            Log out {{ storeAuth.user.email }}
           </button>
 
         </div>
@@ -84,6 +85,11 @@ const links = [
 ];
 
 const closeNavBar = () => showMobileNav.value = false
+
+const logout = () => {
+  closeNavBar()
+  storeAuth.logout()
+}
 
 onClickOutside(navbarRef, (event) => closeNavBar(), {
   ignore: [navbarBurger]

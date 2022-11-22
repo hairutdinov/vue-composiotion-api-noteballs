@@ -31,10 +31,10 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import Note from '@/components/Notes/Note.vue'
 import AddEditNote from '@/components/Notes/AddEditNote.vue'
-import { useStoreNotes } from "../stores/storeNotes.js";
+import { useStoreNotes } from "@/stores/storeNotes.js";
 
 const storeNotes = useStoreNotes()
 
@@ -47,10 +47,6 @@ const addNote = () => {
   newNote.value = ''
   addEditNoteRef.value.focusTextarea()
 }
-
-onMounted(() => {
-  storeNotes.getNotes()
-})
 
 </script>
 

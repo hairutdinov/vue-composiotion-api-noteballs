@@ -58,5 +58,10 @@ export const useStoreAuth = defineStore('storeAuth', {
                 .then(() => console.log('User signed out'))
                 .catch((error) => console.error);
         },
-    }
+    },
+    getters: {
+        isAuthenticated() {
+            return this.user.id !== undefined && this.user.id
+        },
+    },
 })

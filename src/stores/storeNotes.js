@@ -9,7 +9,8 @@ import {
 import { useStoreAuth } from "@/stores/storeAuth.js";
 
 let notesCollectionRef = null,
-    notesCollectionQuery = null
+    notesCollectionQuery = null,
+    getNotesSnapshot = null
 
 export const useStoreNotes = defineStore('storeNotes', {
     state: () => {
@@ -46,7 +47,7 @@ export const useStoreNotes = defineStore('storeNotes', {
         },
         async getNotes() {
             this.notesLoaded = true;
-            const unsubscribe = onSnapshot(notesCollectionQuery, (querySnapshot) => {
+            getNotesSnapshot = onSnapshot(notesCollectionQuery, (querySnapshot) => {
                 let notesLocal = []
                 querySnapshot.forEach((doc) => {
                     notesLocal.push({
@@ -58,10 +59,11 @@ export const useStoreNotes = defineStore('storeNotes', {
 
                 this.notes = notesLocal
                 this.notesLoaded = false;
-            })
+            }, err => console.error(err))
         },
         clearNotes() {
             this.notes = []
+            if (getNotesSnapshot) getNotesSnapshot() // unsubscribe from any active listener
         },
     },
     getters: {
